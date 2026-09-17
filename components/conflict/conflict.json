@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "q-sheet": "/components/sheet/sheet"
+    "q-sheet": "/components/sheet/sheet",
+    "q-icon": "/components/icon/icon"
   }
 }

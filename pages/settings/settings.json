@@ -2,6 +2,9 @@
   "navigationBarTitleText": "我的与设置",
   "usingComponents": {
     "q-icon": "/components/icon/icon",
-    "q-conflict": "/components/conflict/conflict"
-  }
+    "q-conflict": "/components/conflict/conflict",
+    "q-nav": "/components/nav/nav"
+  },
+  "navigationStyle": "custom",
+  "backgroundColor": "#F9F8F5"
 }

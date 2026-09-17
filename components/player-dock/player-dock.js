@@ -6,7 +6,7 @@ Component({
     data: { state: {}, speeds, speedOpen: false, percent: 0, current: '00:00', duration: '00:00' },
     lifetimes: { attached() { this.off = subscribe(() => this.refresh()); this.refresh(); }, detached() { this.off(); } },
     methods: {
-        refresh() { const s = playerState; this.setData({ state: { ...s }, percent: s.duration ? Math.min(100, s.currentTime / s.duration * 100) : 0, current: timeLabel(s.currentTime), duration: timeLabel(s.duration), number: String(s.index + 1).padStart(3, '0') }); },
+        refresh() { const s = playerState; this.setData({ state: { ...s }, percent: s.duration ? Math.min(100, s.currentTime / s.duration * 100) : 0, current: timeLabel(s.currentTime), duration: timeLabel(s.duration), number: String(s.index + 1).padStart(3, '0'), total: String((this.properties.chapter.sentences || []).length).padStart(3, '0') }); },
         action(e) { if (this.properties.frozen)
             return; const a = e.currentTarget.dataset.action; if (a === 'previous')
             player.navigate(-1); if (a === 'next')

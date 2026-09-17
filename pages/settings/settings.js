@@ -82,6 +82,7 @@ Page({
             this.refresh();
         }
     } },
+    about() { wx.showModal({ title: '关于 Pidan Vocal', content: '英语听读与逐句练习。支持章节阅读、全文播放和学习进度同步。', showCancel: false }); },
     async exit() { if (progressStore.hasPending() && !await confirm('有进度尚未同步', '退出将清理此账号的本机缓存和未同步变更，云端已保存的进度会保留。', '退出登录'))
         return; await logout(); selectedBook.value = null; toLibrary(); }
 });

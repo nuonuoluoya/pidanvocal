@@ -17,10 +17,15 @@ Page({
         const r = await content.list(this.data.audience, reset ? undefined : this.data.nextCursor);
         if (!this.alive || op !== this.epoch)
             return;
-        const items = r.items.map(b => ({ ...b, audioLabel: fullAudioLabel(b) }));
+        const items = r.items.map(b => {
+            const words = String(b.title || '').split(/\s+/).filter(w => w && !/^(the|a|an|and|of|from|in|on)$/i.test(w));
+            const initials = words.slice(0, 2).map(w => w[0]).join('').toUpperCase() || '书';
+            const language = /^en(?:[-_]|$)/i.test(b.language || '') ? '英文' : b.language;
+            return { ...b, audioLabel: fullAudioLabel(b), audioComplete: b.chapterAudioAvailableCount > 0 && b.chapterAudioAvailableCount === b.contentChapterCount, coverInitials: initials, metadata: [language, b.edition, b.chapterCount + ' 章'].filter(Boolean).join(' · ') };
+        });
         const byId = new Map((reset ? [] : this.data.books).map(b => [b.bookId, b]));
         items.forEach(b => byId.set(b.bookId, b));
-        this.setData({ books: [...byId.values()], nextCursor: r.nextCursor });
+        this.setData({ books: [...byId.values()].map((b, i) => ({ ...b, coverTone: ['forest', 'sage', 'stone'][i % 3] })), nextCursor: r.nextCursor });
         await this.loadRecent();
     }
     catch (e) {
@@ -53,5 +58,6 @@ Page({
     openBook(e) { navigate('/pages/book/book?bookId=' + encodeURIComponent(e.currentTarget.dataset.id)); },
     continueReading() { if (this.data.recent)
         navigate('/pages/book/book?bookId=' + encodeURIComponent(this.data.recent.bookId) + '&continue=1'); },
-    retry() { this.load(true); }
+    loadMore() { if (this.data.nextCursor && !this.data.busy) return this.load(false); },
+    retry() { return this.load(true); }
 });

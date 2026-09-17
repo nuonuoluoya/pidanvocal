@@ -1,3 +1,8 @@
 {
-  "navigationBarTitleText": "隐私说明"
+  "navigationBarTitleText": "隐私说明",
+  "navigationStyle": "custom",
+  "backgroundColor": "#F9F8F5",
+  "usingComponents": {
+    "q-nav": "/components/nav/nav"
+  }
 }

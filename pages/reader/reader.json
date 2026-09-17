@@ -5,6 +5,9 @@
     "q-player-dock": "/components/player-dock/player-dock",
     "q-icon": "/components/icon/icon",
     "q-sheet": "/components/sheet/sheet",
-    "q-conflict": "/components/conflict/conflict"
-  }
+    "q-conflict": "/components/conflict/conflict",
+    "q-nav": "/components/nav/nav"
+  },
+  "navigationStyle": "custom",
+  "backgroundColor": "#F9F8F5"
 }

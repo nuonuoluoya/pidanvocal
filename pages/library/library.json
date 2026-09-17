@@ -1,7 +1,10 @@
 {
-  "navigationBarTitleText": "Quill · 书架",
+  "navigationBarTitleText": "Pidan Vocal",
+  "navigationStyle": "custom",
+  "backgroundColor": "#F9F8F5",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "q-icon": "/components/icon/icon"
+    "q-icon": "/components/icon/icon",
+    "q-nav": "/components/nav/nav"
   }
 }

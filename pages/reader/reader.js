@@ -8,11 +8,11 @@ const { searchSentences, playable } = require('../../utils/contracts');
 const { subscribe } = require('../../utils/events');
 const { message } = require('../../utils/http');
 Page({
-    data: { book: null, chapter: null, title: '听力阅读', rows: [], query: '', target: '', sheet: false, error: '', notice: '', updated: false, busy: true, frozen: false, hiddenCurrent: false, status: '', more: false },
-    onLoad(q) { this.bookId = q.bookId || ''; this.buildId = q.buildId || ''; this.chapterId = q.chapterId || ''; this.sentenceId = q.sentenceId || ''; this.alive = true; this.active = true; this.epoch = 0; this.limit = 40; this.userScrolled = false; this.off = subscribe(() => this.refresh()); this.identityOff = onIdentityChange(() => { this.epoch++; player.dispose(); this.setData({ book: null, chapter: null, rows: [] }); this.load(); }); this.load(); },
+    data: { chapterLabel: '章节', chapterOptions: [], chapterMode: false, offline: false, book: null, chapter: null, title: '听力阅读', rows: [], query: '', target: '', sheet: false, error: '', notice: '', updated: false, busy: true, frozen: false, hiddenCurrent: false, status: '', more: false },
+    onLoad(q) { this.bookId = q.bookId || ''; this.buildId = q.buildId || ''; this.chapterId = q.chapterId || ''; this.sentenceId = q.sentenceId || ''; this.alive = true; this.networkChange = e => { if (this.alive) this.setData({ offline: !e.isConnected }); }; if (wx.onNetworkStatusChange) wx.onNetworkStatusChange(this.networkChange); if (wx.getNetworkType) wx.getNetworkType({ success: e => this.networkChange({ isConnected: e.networkType !== 'none' }) }); this.active = true; this.epoch = 0; this.limit = 40; this.userScrolled = false; this.off = subscribe(() => this.refresh()); this.identityOff = onIdentityChange(() => { this.epoch++; player.dispose(); this.setData({ book: null, chapter: null, rows: [] }); this.load(); }); this.load(); },
     onShow() { this.active = true; player.setForeground(true); this.checkAccess(); clearInterval(this.timer); this.timer = setInterval(() => this.checkAccess(), 60000); },
     onHide() { this.active = false; player.setForeground(false); progressStore.flushAll(); clearInterval(this.timer); },
-    onUnload() { this.alive = false; this.epoch++; clearInterval(this.timer); this.off(); this.identityOff(); player.onSelection = () => { }; player.dispose(); progressStore.flushAll(); },
+    onUnload() { this.alive = false; if (wx.offNetworkStatusChange) wx.offNetworkStatusChange(this.networkChange); this.epoch++; clearInterval(this.timer); this.off(); this.identityOff(); player.onSelection = () => { }; player.dispose(); progressStore.flushAll(); },
     refresh() {
         if (!this.alive || !this.data.book || !this.data.chapter)
             return;
@@ -26,7 +26,7 @@ Page({
         if (key === this.renderKey)
             return;
         this.renderKey = key;
-        this.setData({ rows: filtered.slice(0, this.limit).map(item => ({ ...item, number: String(item.index).padStart(3, '0'), available: playable(item), reason: (item.alignment.reasons || []).join(' · '), selected: s.mode === 'sentence' && item.index - 1 === s.index, playing: s.status === 'playing' && item.index - 1 === s.index })), more: filtered.length > this.limit, hiddenCurrent: s.mode === 'sentence' && !!current && !filtered.some(x => x.id === current.id), frozen, status: progressStore.status(this.data.book) });
+        this.setData({ chapterMode: s.mode === 'chapter', rows: filtered.slice(0, this.limit).map(item => ({ ...item, number: String(item.index).padStart(3, '0'), available: playable(item), reason: (item.alignment.reasons || []).join(' · '), selected: s.mode === 'sentence' && item.index - 1 === s.index, playing: s.status === 'playing' && item.index - 1 === s.index })), more: filtered.length > this.limit, hiddenCurrent: s.mode === 'sentence' && !!current && !filtered.some(x => x.id === current.id), frozen, status: progressStore.status(this.data.book) });
     },
     save(index = playerState.index) { const b = this.data.book, c = this.data.chapter; if (!b || !c || progressStore.get(b).state.resetting)
         return; const s = c.sentences[index]; if (!s)
@@ -45,7 +45,7 @@ Page({
         let index = this.sentenceId ? c.sentences.findIndex(s => s.id === this.sentenceId) : 0;
         const notice = index < 0 ? '原句子不在当前正文中，已定位章节开头。' : '';
         index = Math.max(0, index);
-        this.setData({ book: b, chapter: c, title: b.chapters.find(x => x.id === id).title, updated: false, notice });
+        this.setData({ chapterLabel: 'Chapter ' + (b.chapters.findIndex(x => x.id === id) + 1), chapterOptions: b.chapters.map((x, i) => ({ ...x, number: String(i + 1).padStart(2, '0') })), book: b, chapter: c, title: b.chapters.find(x => x.id === id).title, updated: false, notice });
         player.load(b, c, index);
         player.setForeground(this.active);
         const p = progressStore.get(b).state.progress;

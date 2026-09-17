@@ -1,88 +1,28 @@
 <view class="reader">
+  <q-nav title="{{chapterLabel}}" back/>
   <view class="reader-top">
-    <view class="between">
-      <button class="quiet row" bindtap="showChapters">
-        <q-icon name="book" size="19"/>
-        章节目录
-      </button>
-      <navigator url="/pages/settings/settings" class="quiet">
-        我的与设置
-      </navigator>
-    </view>
-    <view class="reader-title serif">
-      {{title}}
-    </view>
-    <view class="between">
-      <text class="muted small">
-        {{book.title}}
-      </text>
-      <button wx:if="{{chapter}}" class="quiet small" disabled="{{frozen || chapter.chapterAudio.status!=='available'}}" bindtap="fullPlay">
-        {{chapter.chapterAudio.status==='available'?'整章播放 ▶':'暂无整章音频'}}
-      </button>
-    </view>
-    <view class="search">
-      <input value="{{query}}" bindinput="search" placeholder="搜索当前章节" confirm-type="search" maxlength="120"/>
-      <q-icon name="search" size="18" color="muted"/>
-    </view>
-    <button wx:if="{{updated}}" class="notice" bindtap="updateContent">
-      本书有新版本 · 点击更新
-    </button>
-    <view wx:if="{{notice}}" class="notice">
-      {{notice}}
-    </view>
-    <button wx:if="{{hiddenCurrent}}" class="quiet small" bindtap="locate">
-      当前句子不在搜索结果中 · 定位原文
-    </button>
+    <view class="reader-heading"><view class="reader-title serif">{{title}}</view><button size="default" class="chapter-button" bindtap="showChapters">章节<q-icon name="arrow-right" size="15"/></button></view>
+    <view class="search"><q-icon name="search" size="19" color="muted"/><input value="{{query}}" bindinput="search" placeholder="搜索本章" confirm-type="search" maxlength="120"/></view>
+    <view class="reader-mode"><text class="muted">{{chapterMode?'正在全文播放':book.contentScope==='sample'?'样本内容':'完整内容'}}</text><button size="default" wx:if="{{chapter && !chapterMode}}" class="full-play" disabled="{{frozen || chapter.chapterAudio.status!=='available'}}" bindtap="fullPlay"><q-icon name="play" color="green" size="14"/><text>{{chapter.chapterAudio.status==='available'?'全文播放':'暂无整章音频'}}</text></button></view>
+    <button size="default" wx:if="{{updated}}" class="notice" bindtap="updateContent">本书有新版本 · 点击更新</button>
+    <view wx:if="{{offline || notice}}" class="notice"><q-icon name="warning" color="muted" size="19"/><text>{{offline?'网络已断开 · 进度已保存在本机':notice}}</text></view>
+    <button size="default" wx:if="{{hiddenCurrent}}" class="quiet small" bindtap="locate">当前句子不在搜索结果中 · 定位原文</button>
   </view>
   <scroll-view class="sentences" scroll-y enhanced scroll-into-view="{{target}}" bindtouchstart="manualScroll" bindscrolltolower="more">
-    <view wx:if="{{error}}" class="empty error">
-      {{error}}
-      <button class="action outline" bindtap="retry">
-        重试
-      </button>
-    </view>
-    <view wx:elif="{{busy}}" class="empty">
-      正在加载原文…
-    </view>
+    <view wx:if="{{error}}" class="empty error">{{error}}<button size="default" class="action outline" bindtap="retry">重试</button></view><view wx:elif="{{busy}}" class="empty">正在加载原文…</view>
     <block wx:else>
-      <view wx:for="{{rows}}" wx:key="id" id="sentence-{{item.index-1}}" class="sentence {{item.selected?'selected':''}}" data-index="{{item.index}}" bindtap="click">
-        <text class="sentence-no">
-          {{item.number}}
-        </text>
-        <view class="grow">
-          <text class="sentence-text">
-            {{item.text}}
-          </text>
-          <view wx:if="{{!item.available}}" class="small muted">
-            暂无音频 · {{item.reason || '待校对'}}
-          </view>
-        </view>
-        <q-icon wx:if="{{item.selected}}" name="{{item.playing?'pause':'play'}}" color="green" size="16"/>
+      <view wx:for="{{rows}}" wx:key="id" id="sentence-{{item.index-1}}" class="sentence {{item.selected?'selected':''}}" data-index="{{item.index}}" bindtap="click" role="button" aria-label="第 {{item.number}} 句，{{item.available?'播放':'暂无音频'}}">
+        <text class="sentence-no">{{item.number}}</text><view class="sentence-play"><q-icon wx:if="{{item.available}}" name="{{item.selected && item.playing?'pause':'play'}}" color="{{item.selected?'green':'ink'}}" size="16"/><text wx:else class="muted">—</text></view>
+        <view class="grow"><text class="sentence-text">{{item.text}}</text><view wx:if="{{!item.available}}" class="unavailable">{{item.alignment.status==='needs_review'?'待复核 · 暂无逐句音频':'暂无逐句音频'}}</view></view>
       </view>
-      <view wx:if="{{!rows.length}}" class="empty">
-        {{query?'没有找到匹配的句子':'本章暂无正文'}}
-      </view>
-      <button wx:if="{{more}}" class="action quiet" bindtap="more">
-        加载更多句子
-      </button>
-      <view class="reader-status">
-        {{status}}
-      </view>
+      <view wx:if="{{!rows.length}}" class="empty">{{query?'没有找到匹配的句子':'本章暂无正文'}}</view><button size="default" wx:if="{{more}}" class="action quiet" bindtap="more">加载更多句子</button>
     </block>
   </scroll-view>
   <q-player-dock wx:if="{{chapter}}" chapter="{{chapter}}" title="{{title}}" frozen="{{frozen}}" bindlocate="locate" bindspeed="changeSpeed"/>
-  <q-sheet open="{{sheet}}" title="章节目录" bindclose="hideChapters">
-    <button wx:for="{{book.chapters}}" wx:key="id" class="chapter-row" data-id="{{item.id}}" bindtap="chooseChapter">
-      <view class="grow">
-        <view class="chapter-title">
-          {{item.title}}
-        </view>
-        <text class="muted small">
-          {{item.sentenceCount}} 句 · {{item.playableCount}} 句可播放
-        </text>
-      </view>
-      <q-icon name="arrow-right" color="muted" size="18"/>
-    </button>
+  <q-sheet open="{{sheet}}" title="选择章节" bindclose="hideChapters">
+    <view class="sheet-book muted serif">{{book.title}} · {{book.contentScope==='sample'?'样本内容':'完整内容'}}</view>
+    <button size="default" wx:for="{{chapterOptions}}" wx:key="id" class="chapter-row" data-id="{{item.id}}" bindtap="chooseChapter"><text class="chapter-no">{{item.number}}</text><view class="grow"><view class="chapter-title">{{item.title}}</view><text class="muted small">{{item.sentenceCount}} 句 · {{item.sentenceCount===item.playableCount?'全部可播放':item.playableCount+' 句可播放'}}</text></view><text wx:if="{{item.id===chapter.chapterId}}" class="badge">当前章节</text><q-icon wx:else name="arrow-right" color="muted" size="18"/></button>
+    <view class="sheet-hint">切换章节会停止当前播放</view>
   </q-sheet>
   <q-conflict wx:if="{{book}}" book="{{book}}" bindresolved="resolved"/>
 </view>
