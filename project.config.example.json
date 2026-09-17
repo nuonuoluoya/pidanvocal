@@ -2,7 +2,7 @@
   "description": "Quill 原生微信小程序，参考 Hmall 的 Page / Component / models 结构",
   "miniprogramRoot": "./",
   "compileType": "miniprogram",
-  "appid": "wx4d775ce891c1a729",
+  "appid": "touristappid",
   "projectname": "Quill",
   "setting": {
     "urlCheck": true,
@@ -42,6 +42,14 @@
       {
         "type": "file",
         "value": "package-lock.json"
+      },
+      {
+        "value": "project.config.example.json",
+        "type": "file"
+      },
+      {
+        "value": "config/config.example.js",
+        "type": "file"
       }
     ]
   },

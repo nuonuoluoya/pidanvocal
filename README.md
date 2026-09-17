@@ -4,6 +4,10 @@
 
 ## 配置
 
+首次克隆仓库后，在项目目录执行 `npm run setup`（无需安装依赖），从示例生成本地配置，然后导入微信开发者工具。此命令不会覆盖已有配置。
+
+仓库提交 `project.config.example.json` 和 `config/config.example.js`；实际使用的 `project.config.json`、`project.private.config.json`、`config/config.js` 以及 `.env` 文件均由 `.gitignore` 排除。AppID 是公开标识，但此项目统一将个人 AppID、接口地址和运营联系方式留在本地。AppSecret、Token 等密钥必须只保存在后端；Git 忽略不能阻止前端配置被打进小程序包。
+
 - AppID：根目录 `project.config.json` 的 `appid`。将 `touristappid` 替换为自己的微信小程序 AppID。后端微信登录配置须使用同一个 AppID。AppSecret 只放后端。
 - API 地址和环境隔离：`config/config.js` 的 `apiBaseUrl`、`environment`。
 - 运营联系方式：`config/config.js` 的 `operatorContact`。
@@ -51,3 +55,7 @@ tests/ scripts/              Node 校验（不进入小程序包）
 后端运行时可执行 `node scripts/smoke-api.cjs` 检查公开书籍、正文和音频授权接口。
 
 真实微信音频表现、微信登录和发布预览还需在开发者工具/真机中验收。
+
+## 开发与提交
+
+特性、用户可见行为、配置或启动方式发生变化时，在同一次提交中更新本 README。提交前检查变更并运行相关校验；本地实际配置不进入版本管理，新增配置同步更新示例文件。项目协作规则见 [AGENTS.md](AGENTS.md)。

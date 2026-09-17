@@ -7,3 +7,5 @@
 .codex-tools/
 **/.env.*
 !**/.env.example
+/project.config.json
+/config/config.js
