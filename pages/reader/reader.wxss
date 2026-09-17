@@ -1,0 +1,74 @@
+.reader {
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden
+}
+.reader-top {
+  padding:18px 24px 10px;
+  flex-shrink:0
+}
+.reader-title {
+  font-size:32px;
+  line-height:1.18;
+  margin:20px 0 10px
+}
+.search {
+  margin-top:18px;
+  padding:10px 12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#ECEEE6;
+  border-radius:6px
+}
+.search input {
+  flex:1;
+  font-size:13px;
+  min-width:0
+}
+.sentences {
+  flex:1;
+  min-height:0;
+  height:0
+}
+.sentence {
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:18px 24px;
+  border-left:3px solid transparent
+}
+.sentence.selected {
+  background:#E7EEE6;
+  border-color:#426750
+}
+.sentence-no {
+  font-family:Georgia,serif;
+  font-size:11px;
+  color:#8B9488;
+  margin-top:5px
+}
+.sentence-text {
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:18px;
+  line-height:1.7
+}
+.sentence q-icon {
+  margin-top:6px
+}
+.reader-status {
+  padding:25px;
+  text-align:center;
+  color:#899187;
+  font-size:11px
+}
+.reader q-player-dock {
+  flex-shrink:0
+}
+.reader-top .notice {
+  padding:8px 12px;
+  margin:8px 0;
+  font-size:12px
+}
+

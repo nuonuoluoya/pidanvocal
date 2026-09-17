@@ -1,0 +1,70 @@
+.brand {
+  font-size:26px;
+  letter-spacing:-1px
+}
+.intro {
+  margin-top:44px
+}
+.title {
+  font-size:40px;
+  line-height:1.3
+}
+.recent-title {
+  font-size:27px;
+  margin:10px 0
+}
+.tabs {
+  display:flex;
+  gap:24px;
+  border-bottom:1px solid #DEDFD7;
+  margin:20px 0 4px
+}
+.tab {
+  padding:10px 0;
+  color:#8A9188;
+  font-size:14px
+}
+.tab.selected {
+  color:#244C3C;
+  border-bottom:2px solid #244C3C
+}
+.book-row {
+  display:flex;
+  gap:16px;
+  align-items:center;
+  width:100%;
+  text-align:left;
+  padding:25px 0;
+  border-bottom:1px solid #DEDFD7
+}
+.book-cover {
+  width:76px;
+  height:108px;
+  flex-shrink:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:#DFE5D7;
+  border-left:5px solid #BCC8B5;
+  border-radius:2px 5px 5px 2px;
+  gap:12px
+}
+.cover-label {
+  font-size:7px;
+  letter-spacing:2px;
+  text-align:center;
+  color:#66785D
+}
+.book-title {
+  font-size:23px;
+  line-height:1.25;
+  margin-bottom:9px
+}
+.book-meta {
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:10px
+}
+

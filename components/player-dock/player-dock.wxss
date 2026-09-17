@@ -1,0 +1,74 @@
+@import '../../wxss/common.wxss';
+  
+.dock {
+  padding:4px 24px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid #DEDFD7;
+  background:#F7F6F2
+}
+.heading {
+  min-height:38px;
+  gap:8px
+}
+.heading>text {
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+.controls {
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding:4px 0 12px
+}
+.side {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  font-size:11px;
+  min-width:64px
+}
+.play {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#244C3C;
+  color:white;
+  width:62px;
+  height:62px;
+  border-radius:50%
+}
+.options {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#788079;
+  font-size:12px
+}
+.enabled {
+  color:#244C3C;
+  font-weight:600
+}
+.hint {
+  text-align:center;
+  margin-top:6px
+}
+.bar {
+  height:3px;
+  background:#DEDFD7;
+  margin:5px 0
+}
+.bar view {
+  height:100%;
+  background:#244C3C
+}
+.choices {
+  justify-content:center;
+  margin:0 0 14px
+}
+.loading {
+  font-size:26px
+}
+

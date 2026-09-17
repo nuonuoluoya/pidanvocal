@@ -1,0 +1,67 @@
+<view class="page">
+  <view class="between">
+    <navigator url="/pages/library/library" open-type="reLaunch" class="quiet">
+      ← 书架
+    </navigator>
+    <navigator url="/pages/settings/settings" class="quiet">
+      我的与设置
+    </navigator>
+  </view>
+  <view wx:if="{{error}}" class="empty error">
+    {{error}}
+    <button class="action outline" bindtap="load">
+      重试
+    </button>
+  </view>
+  <view wx:elif="{{!book}}" class="empty">
+    正在加载章节目录…
+  </view>
+  <block wx:if="{{book}}">
+    <view class="title">
+      {{book.title}}
+    </view>
+    <text class="muted small">
+      {{book.contentScope==='sample'?'样本内容':'完整内容'}} · {{chapters.length}} 章 · 英文
+    </text>
+    <view wx:if="{{position}}" class="card">
+      <text class="label">
+        上次读到
+      </text>
+      <view class="section-title">
+        {{position}}
+      </view>
+      <button class="action primary" bindtap="continueReading">
+        继续学习
+      </button>
+    </view>
+    <view class="between list-header">
+      <text class="section-title">
+        章节
+      </text>
+      <text class="small muted">
+        {{totals[0]}} 句 · {{totals[1]}} 句可播放
+      </text>
+    </view>
+    <button wx:for="{{chapters}}" wx:key="id" class="chapter-row" data-id="{{item.id}}" bindtap="openChapter">
+      <text class="chapter-no">
+        {{item.number}}
+      </text>
+      <view class="grow">
+        <view class="chapter-title">
+          {{item.title}}
+        </view>
+        <text class="muted small">
+          {{item.sentenceCount}} 句 · {{item.playableCount}} 句可播放
+        </text>
+      </view>
+      <q-icon name="arrow-right" size="18" color="muted"/>
+    </button>
+    <view wx:if="{{!chapters.length}}" class="empty">
+      本书暂无章节
+    </view>
+    <view class="status">
+      {{status}}
+    </view>
+    <q-conflict book="{{book}}" bindresolved="refresh"/>
+  </block>
+</view>

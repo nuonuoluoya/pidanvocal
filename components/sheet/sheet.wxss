@@ -1,0 +1,43 @@
+:host {
+  display:contents
+}
+.overlay {
+  position:fixed;
+  inset:0;
+  z-index:100
+}
+.backdrop {
+  position:absolute;
+  inset:0;
+  background:rgba(24,36,29,.38)
+}
+.sheet {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  background:#F7F6F2;
+  border-radius:20px 20px 0 0;
+  padding:24px 24px calc(24px + env(safe-area-inset-bottom))
+}
+.heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:22px;
+  margin-bottom:18px
+}
+.heading button {
+  background:transparent;
+  font-size:30px;
+  margin:0;
+  padding:0 8px;
+  line-height:40px
+}
+.heading button::after {
+  border:0
+}
+.body {
+  max-height:65vh
+}
+

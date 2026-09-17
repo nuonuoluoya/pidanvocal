@@ -1,0 +1,19 @@
+{
+  "pages": [
+    "pages/library/library",
+    "pages/book/book",
+    "pages/reader/reader",
+    "pages/settings/settings",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "navigationBarTitleText": "Quill · 英文听读",
+    "navigationBarBackgroundColor": "#F7F6F2",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F7F6F2"
+  },
+  "style": "v2",
+  "renderer": "webview",
+  "componentFramework": "exparser",
+  "sitemapLocation": "sitemap.json"
+}

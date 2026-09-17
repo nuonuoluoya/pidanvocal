@@ -1,0 +1,109 @@
+<view class="page">
+  <block wx:if="{{!loggedIn}}">
+    <q-icon name="book" color="green" size="44"/>
+    <view class="title">
+      把阅读位置带到
+      <view>
+        下一台设备。
+      </view>
+    </view>
+    <text class="muted">
+      登录后同步进度，也可以先体验样本。
+    </text>
+    <view class="benefits">
+      <view>
+        ✓ 保存章节与句子位置
+      </view>
+      <view>
+        ✓ 同步每本书的倍速偏好
+      </view>
+      <view>
+        ✓ 保留你自己的阅读节奏
+      </view>
+    </view>
+    <checkbox-group bindchange="consent">
+      <label class="consent">
+        <checkbox value="agree" checked="{{consent}}" color="#244C3C"/>
+        <text>
+          我已阅读并同意
+        </text>
+      </label>
+    </checkbox-group>
+    <navigator url="/pages/privacy/privacy" class="privacy-link">
+      《隐私说明》
+    </navigator>
+    <button class="action primary" disabled="{{!consent || busy}}" loading="{{busy}}" bindtap="signIn">
+      微信登录
+    </button>
+    <navigator url="/pages/library/library" open-type="reLaunch" class="skip">
+      先去体验样本 →
+    </navigator>
+  </block>
+  <block wx:else>
+    <text class="eyebrow">
+      YOUR READING SPACE
+    </text>
+    <view class="title">
+      我的阅读
+    </view>
+    <text class="muted">
+      已登录 · 阅读进度可在设备间同步
+    </text>
+  </block>
+  <view wx:if="{{error || authError}}" class="notice error">
+    {{error || authError}}
+  </view>
+  <view class="setting">
+    <view class="section-title">
+      播放速度
+    </view>
+    <text class="muted small">
+      选择适合自己的听读节奏
+    </text>
+    <view class="choices">
+      <button wx:for="{{speeds}}" wx:key="*this" class="choice {{speed===item?'active':''}}" data-value="{{item}}" bindtap="setSpeed">
+        {{item}}×
+      </button>
+    </view>
+  </view>
+  <view class="setting">
+    <view class="section-title">
+      阅读进度
+    </view>
+    <block wx:if="{{book}}">
+      <view class="current-book serif">
+        {{book.title}}
+      </view>
+      <view class="muted small">
+        {{position}}
+      </view>
+      <view class="status">
+        {{status}}
+      </view>
+      <button wx:if="{{loggedIn}}" class="action outline" disabled="{{busy}}" bindtap="sync">
+        同步 / 处理进度冲突
+      </button>
+      <button class="action quiet" disabled="{{busy}}" bindtap="clear">
+        清除本书当前版本进度
+      </button>
+    </block>
+    <text wx:else class="muted small">
+      从书架选择一本书后，在这里管理进度。
+    </text>
+  </view>
+  <view class="setting between">
+    <text>
+      隐私与数据
+    </text>
+    <navigator url="/pages/privacy/privacy" class="quiet">
+      查看说明 →
+    </navigator>
+  </view>
+  <button wx:if="{{loggedIn}}" class="action outline" bindtap="exit">
+    退出登录
+  </button>
+  <view class="footer">
+    Quill · 一句话，一点进步。
+  </view>
+  <q-conflict wx:if="{{book}}" book="{{book}}" bindresolved="refresh"/>
+</view>

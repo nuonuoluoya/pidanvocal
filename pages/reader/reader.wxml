@@ -1,0 +1,88 @@
+<view class="reader">
+  <view class="reader-top">
+    <view class="between">
+      <button class="quiet row" bindtap="showChapters">
+        <q-icon name="book" size="19"/>
+        章节目录
+      </button>
+      <navigator url="/pages/settings/settings" class="quiet">
+        我的与设置
+      </navigator>
+    </view>
+    <view class="reader-title serif">
+      {{title}}
+    </view>
+    <view class="between">
+      <text class="muted small">
+        {{book.title}}
+      </text>
+      <button wx:if="{{chapter}}" class="quiet small" disabled="{{frozen || chapter.chapterAudio.status!=='available'}}" bindtap="fullPlay">
+        {{chapter.chapterAudio.status==='available'?'整章播放 ▶':'暂无整章音频'}}
+      </button>
+    </view>
+    <view class="search">
+      <input value="{{query}}" bindinput="search" placeholder="搜索当前章节" confirm-type="search" maxlength="120"/>
+      <q-icon name="search" size="18" color="muted"/>
+    </view>
+    <button wx:if="{{updated}}" class="notice" bindtap="updateContent">
+      本书有新版本 · 点击更新
+    </button>
+    <view wx:if="{{notice}}" class="notice">
+      {{notice}}
+    </view>
+    <button wx:if="{{hiddenCurrent}}" class="quiet small" bindtap="locate">
+      当前句子不在搜索结果中 · 定位原文
+    </button>
+  </view>
+  <scroll-view class="sentences" scroll-y enhanced scroll-into-view="{{target}}" bindtouchstart="manualScroll" bindscrolltolower="more">
+    <view wx:if="{{error}}" class="empty error">
+      {{error}}
+      <button class="action outline" bindtap="retry">
+        重试
+      </button>
+    </view>
+    <view wx:elif="{{busy}}" class="empty">
+      正在加载原文…
+    </view>
+    <block wx:else>
+      <view wx:for="{{rows}}" wx:key="id" id="sentence-{{item.index-1}}" class="sentence {{item.selected?'selected':''}}" data-index="{{item.index}}" bindtap="click">
+        <text class="sentence-no">
+          {{item.number}}
+        </text>
+        <view class="grow">
+          <text class="sentence-text">
+            {{item.text}}
+          </text>
+          <view wx:if="{{!item.available}}" class="small muted">
+            暂无音频 · {{item.reason || '待校对'}}
+          </view>
+        </view>
+        <q-icon wx:if="{{item.selected}}" name="{{item.playing?'pause':'play'}}" color="green" size="16"/>
+      </view>
+      <view wx:if="{{!rows.length}}" class="empty">
+        {{query?'没有找到匹配的句子':'本章暂无正文'}}
+      </view>
+      <button wx:if="{{more}}" class="action quiet" bindtap="more">
+        加载更多句子
+      </button>
+      <view class="reader-status">
+        {{status}}
+      </view>
+    </block>
+  </scroll-view>
+  <q-player-dock wx:if="{{chapter}}" chapter="{{chapter}}" title="{{title}}" frozen="{{frozen}}" bindlocate="locate" bindspeed="changeSpeed"/>
+  <q-sheet open="{{sheet}}" title="章节目录" bindclose="hideChapters">
+    <button wx:for="{{book.chapters}}" wx:key="id" class="chapter-row" data-id="{{item.id}}" bindtap="chooseChapter">
+      <view class="grow">
+        <view class="chapter-title">
+          {{item.title}}
+        </view>
+        <text class="muted small">
+          {{item.sentenceCount}} 句 · {{item.playableCount}} 句可播放
+        </text>
+      </view>
+      <q-icon name="arrow-right" color="muted" size="18"/>
+    </button>
+  </q-sheet>
+  <q-conflict wx:if="{{book}}" book="{{book}}" bindresolved="resolved"/>
+</view>

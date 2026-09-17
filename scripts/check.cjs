@@ -1,0 +1,60 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const root = path.resolve(__dirname, '..');
+const app = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'));
+const ignored = new Set(['frontend', 'contracts', '.codex-tools', 'node_modules', '.git']);
+function walk(dir) { return fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => ignored.has(e.name) ? [] : e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]); }
+const files = walk(root);
+let checked = 0;
+for (const file of files) {
+    const text = fs.readFileSync(file, 'utf8');
+    if (file.endsWith('.json')) {
+        const cfg = JSON.parse(text);
+        for (const value of Object.values(cfg.usingComponents || {})) {
+            const component = value.startsWith('/') ? path.join(root, value) : path.resolve(path.dirname(file), value);
+            for (const ext of ['.js', '.json', '.wxml', '.wxss'])
+                if (!fs.existsSync(component + ext))
+                    throw Error('缺少组件文件 ' + component + ext);
+        }
+    }
+    if (file.endsWith('.js')) {
+        new vm.Script(text, { filename: file });
+        if (/\buni\.|from ['"]vue|import\.meta/.test(text))
+            throw Error('遗留框架引用 ' + file);
+        for (const match of text.matchAll(/require\(['"]([^'"]+)['"]\)/g)) {
+            if (match[1].startsWith('.') && !fs.existsSync(path.resolve(path.dirname(file), match[1] + '.js')))
+                throw Error('无效模块引用 ' + file + ' ' + match[1]);
+        }
+        checked++;
+    }
+}
+for (const page of app.pages)
+    for (const ext of ['.js', '.json', '.wxml', '.wxss'])
+        if (!fs.existsSync(path.join(root, page + ext)))
+            throw Error('缺少页面文件 ' + page + ext);
+const config = JSON.parse(fs.readFileSync(path.join(root, 'project.config.json'), 'utf8'));
+if (config.miniprogramRoot !== './')
+    throw Error('小程序入口必须为根目录');
+// 模板中使用的组件必须有显式依赖，防止迁移后出现标签存在但组件未注册。
+const dependencies = new Map();
+for (const file of files.filter(file => file.endsWith('.wxml'))) {
+    const componentPath = file.slice(0, -5);
+    const cfg = JSON.parse(fs.readFileSync(componentPath + '.json', 'utf8'));
+    const using = cfg.usingComponents || {};
+    const template = fs.readFileSync(file, 'utf8');
+    for (const [, tag] of template.matchAll(/<(q-[\w-]+)(?=[\s/>])/g)) {
+        if (!using[tag]) throw Error(`模板组件未在当前 JSON 声明：${file} → ${tag}`);
+    }
+    dependencies.set(componentPath, Object.values(using).map(value =>
+        value.startsWith('/') ? path.join(root, value) : path.resolve(path.dirname(file), value)));
+}
+const visited = new Set();
+function visit(node, stack = []) {
+    if (stack.includes(node)) throw Error('组件依赖出现循环：' + [...stack, node].join(' → '));
+    if (visited.has(node)) return;
+    for (const dependency of dependencies.get(node) || []) visit(dependency, [...stack, node]);
+    visited.add(node);
+}
+for (const node of dependencies.keys()) visit(node);
+console.log(`通过：${app.pages.length} 个原生页面，${checked} 个 JS 文件，JSON / 模块 / 组件引用有效。`);

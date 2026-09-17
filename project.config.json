@@ -1,0 +1,50 @@
+{
+  "description": "Quill 原生微信小程序，参考 Hmall 的 Page / Component / models 结构",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "appid": "wx4d775ce891c1a729",
+  "projectname": "Quill",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "minifyWXSS": true,
+    "minifyWXML": true
+  },
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".codex-tools"
+      },
+      {
+        "type": "folder",
+        "value": "tests"
+      },
+      {
+        "type": "folder",
+        "value": "scripts"
+      },
+      {
+        "type": "folder",
+        "value": "node_modules"
+      },
+      {
+        "type": "file",
+        "value": "README.md"
+      },
+      {
+        "type": "file",
+        "value": "package.json"
+      },
+      {
+        "type": "file",
+        "value": "package-lock.json"
+      }
+    ]
+  },
+  "condition": {},
+  "libVersion": "3.17.2"
+}

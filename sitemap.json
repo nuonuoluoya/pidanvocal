@@ -1,0 +1,9 @@
+{
+  "desc": "学习内容页面无需索引",
+  "rules": [
+    {
+      "action": "disallow",
+      "page": "*"
+    }
+  ]
+}

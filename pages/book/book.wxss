@@ -1,0 +1,6 @@
+.title {
+  font-size:48px;
+  margin-top:34px;
+  max-width:340px
+}
+

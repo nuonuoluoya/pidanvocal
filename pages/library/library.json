@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "Quill · 书架",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "q-icon": "/components/icon/icon"
+  }
+}
